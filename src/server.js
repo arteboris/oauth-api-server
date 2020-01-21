@@ -6,6 +6,9 @@ import config from './config';
 import mainRouter from './main/main';
 import usersRouter from './users/users.router';
 import sessionsRouter from './sessions/sessions.router';
+import ingredientsRouter from './ingredients/ingredients.router';
+import productsRouter from './products/products.router';
+import commentsRouter from './сomments/сomments.router';
 
 init();
 
@@ -26,6 +29,9 @@ async function initMiddleware(app){
 
 async function initRouters(app){
     app.use('/', mainRouter);
+    app.use('/ingredients', ingredientsRouter);
+    app.use('/products', productsRouter);
+    app.use('/comments', commentsRouter);
     app.use('/auth', sessionsRouter);
     app.use('/auth/register', usersRouter);
     app.use('/auth/*', (req, res, next) => {
