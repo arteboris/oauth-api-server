@@ -65,6 +65,60 @@ class CommentsController {
             return next(err);
         };
     };
+
+    get updatedCommentById() {
+        return this._updatedCommentById.bind(this);
+    };
+
+    async _updatedCommentById(req, res, next) {
+        const id = req.params.id;
+        const body = req.body;
+        const bearerAndToken = req.headers.authorization;
+        const token = bearerAndToken.split('Bearer ')[1];
+        try{
+            const session = await sessionsModel.getUser(token);
+            if(!session) return res.status(401).json({ status: 'failed', message: 'Not found token'});
+            const userId = session._doc.user_id;
+
+            const comment = await commentsModel.getCommentById(id);
+            if(!comment) return res.status(401).json({ status: 'failed', message: 'Not found comment'});
+            const authorId = comment._doc.author;
+
+            if(userId !== authorId) return res.status(401).json({status: 'failed', message: 'you have no right'});
+
+            const updatedComment = await commentsModel.updatedCommentById(id, body);
+
+            return res.status(200).json({status: 'success updated', comment: updatedComment })
+        } catch(err){
+            next(err);
+        };
+    };
+
+    get deleteCommentById(){
+        return this._deleteCommentById.bind(this);
+    };
+
+    async _deleteCommentById(req, res, next){
+        const id = req.params.id;
+        const bearerAndToken = req.headers.authorization;
+        const token = bearerAndToken.split('Bearer ')[1];
+        try{
+            const session = await sessionsModel.getUser(token);
+            if(!session) return res.status(401).json({ status: 'failed', message: 'Not found token'});
+            const userId = session._doc.user_id;
+
+            const comment = await commentsModel.getCommentById(id);
+            if(!comment) return res.status(401).json({ status: 'failed', message: 'Not found comment'});
+            const authorId = comment._doc.author;
+
+            if(userId !== authorId) return res.status(401).json({status: 'failed', message: 'you have no right'});
+
+            const deletedComment = await commentsModel.deleteCommentById(id);
+            return res.status(200).json({status: 'success deleted', comment: deletedComment })
+        } catch(err){
+            next(err);
+        };
+    };
 };
 
 export const commentsController = new CommentsController();

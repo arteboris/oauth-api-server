@@ -17,6 +17,8 @@ commentSchema.plugin(timestamp);
 commentSchema.statics.getAllComments = getAllComments;
 commentSchema.statics.getCommentById = getCommentById;
 commentSchema.statics.createComment = createComment;
+commentSchema.statics.updatedCommentById = updatedCommentById;
+commentSchema.statics.deleteCommentById = deleteCommentById;
 
 async function getAllComments(product, author){
     try{
@@ -46,6 +48,26 @@ async function createComment(authorId, productId, text, mark) {
         });
     } catch(err){
         return next(err);
+    };
+};
+
+async function updatedCommentById(id, body){
+    try{
+        return await this.findOneAndUpdate(
+            {_id: id},
+            body,
+            {new: true},
+        );
+    } catch(err){
+        throw err;
+    };
+};
+
+async function deleteCommentById(id){
+    try{
+        return await this.findByIdAndDelete(id);
+    } catch(err){
+        throw err;
     };
 };
 
