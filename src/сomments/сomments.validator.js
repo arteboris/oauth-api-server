@@ -9,19 +9,19 @@ class CommentsValidator {
 
     async _getAllComments(req, res, next) {
         const url = req.url;
-        if(!url.includes('?')) next();
+        if(!url.includes('?')) return next();
 
         const productQuery = req.query.product;
         const authorQuery = req.query.author;
 
         if(url.includes('?') && productQuery){
             const product = productQuery.split(",");
-            if(product.length === 1) next();
+            if(product.length === 1) return next();
         };
 
         if(url.includes('?') && authorQuery){
             const author = authorQuery.split(",");
-            if(author === 1) next()
+            if(author.length === 1) return next()
         };
 
         return res.status(400).json('SmartBin: Invalid URL');
@@ -46,7 +46,7 @@ class CommentsValidator {
         validator.run(createCommentRules, req.body, (errorCount, errors) => {
             if(errorCount) return res.status(400).json(errors);
 
-            next();
+           return next();
         });
     };
 
@@ -62,15 +62,13 @@ class CommentsValidator {
         if(!body) return res.status(400).json({ message : "missing fields"})
 
         const updatedCommentRules = validator.isObject()
-        .withOptional("product", validator.isString())
-        .withOptional("author", validator.isString())
         .withOptional("text", validator.isString())
         .withOptional("mark", validator.isNumber({min: 1, max: 5}));
 
         validator.run(updatedCommentRules, req.body, (errorCount, errors) => {
             if(errorCount) return res.status(400).json(errors);
 
-            next();
+            return next();
         });
     };
 
@@ -80,7 +78,7 @@ class CommentsValidator {
 
     async _deleteCommentById(req, res, next) {
         const token = req.headers.authorization;
-        if(token) next()
+        if(token) return next();
 
         return res.status(403).json({status: 'not authorized', message: 'Missing token provided.'});
     };

@@ -45,16 +45,15 @@ class ProductsController {
     };
 
     async _createProduct(req, res, next){
-        const { name, description, price, currency, categories} = req.body;
+        const { name, description, price, currency, categories, ingredients} = req.body;
         const bearerAndToken = req.headers.authorization;
         const token = bearerAndToken.split('Bearer ')[1]
         try{
             const session = await sessionsModel.getUser(token);
             if(!session) return res.status(401).json({ status: 'failed', message: 'Not found token'});
-
             const userId = session._doc.user_id;
-            const product = await productsModel.createProduct(userId, name, description, price, currency, categories);
-
+            const product = await productsModel.createProduct(userId, name, description, price, currency, categories, ingredients);
+            
             await product.save((err, data) => {
                 if (err) return res.status(400).json(err);
                 return res.status(201).json({'status': 'success', 'product': data});
@@ -83,9 +82,9 @@ class ProductsController {
 
             const product = await productsModel.getProductById(id);
             if(!product) return res.status(404).json({ status: 'failed', message: 'Not found product'});
-            const created = product._doc.created;
+            const createdId = product._doc.created;
 
-            if(userId !== created) {
+            if(!userId.equals(createdId)) {
                 return res.status(401).json({status: 'failed', message: 'you have no right' })
             };
 
@@ -116,7 +115,7 @@ class ProductsController {
             if(!product) return res.status(404).json({ status: 'failed', message: 'Not found product'});
             const created = product._doc.created;
 
-            if(userId !== created) {
+            if(!userId.equals(created)) {
                 return res.status(401).json({status: 'failed', message: 'you have no right' })
             };
 

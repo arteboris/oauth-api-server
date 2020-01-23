@@ -11,7 +11,7 @@ class ProductsValidator {
         const url = req.url;
         const createdQuery = req.query.created;
         if(!url.includes('?')){
-            next();
+            return next();
         };
         if(url.includes('?') && createdQuery) {
             const id = createdQuery.split(",");
@@ -36,12 +36,12 @@ class ProductsValidator {
         };
 
         const createProductRules = validator.isObject()
-        .withRequired("created", validator.isString())
         .withRequired("name", validator.isString())
         .withRequired("description", validator.isString())
         .withRequired("price", validator.isNumber())
         .withRequired("currency", validator.isString())
         .withRequired("categories", validator.isArray(validator.isString(), {min: 1}))
+        .withRequired("ingredients", validator.isArray(validator.isString(), {min: 1}));
 
         validator.run(createProductRules, req.body, (errCount, errors) => {
             if(errCount) {

@@ -32,7 +32,7 @@ async function getAllComments(product, author){
 
 async function getCommentById(id){
     try{
-        return await this.findByID(id);
+        return await this.findById(id);
     } catch(err){
         return null;
     };

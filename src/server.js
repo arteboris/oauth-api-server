@@ -1,5 +1,4 @@
 import express from 'express';
-import bodyParser from 'body-parser';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import config from './config';
@@ -23,8 +22,8 @@ async function init() {
 };
 
 async function initMiddleware(app){
-    app.use(bodyParser.json());
-    app.use(cors());
+    app.use(express.json());
+    app.use(cors('*'));
 };
 
 async function initRouters(app){
@@ -34,8 +33,8 @@ async function initRouters(app){
     app.use('/comments', commentsRouter);
     app.use('/auth', sessionsRouter);
     app.use('/auth/register', usersRouter);
-    app.use('/auth/*', (req, res, next) => {
-        res.status(404).json({ SmartBin: 'Invalid URL' })
+    app.use('*', (req, res) => {
+       return res.status(400).json({SmartBin: 'Invalid URL'});
     });
 };
 
