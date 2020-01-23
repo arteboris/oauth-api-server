@@ -17,8 +17,9 @@ const productSchema = new Schema({
             message: 'there must be at least one category'
         }
     },
+    ingredients: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ingredients', required: true}], 
     likes: Number,
-},
+},  
 { 
     versionKey: false,
 });
@@ -46,7 +47,7 @@ async function getProductById(id) {
     };
 };
 
-async function createProduct(userId, name, description, price, currency, categories) {
+async function createProduct(userId, name, description, price, currency, categories, ingredients) {
     try {
         return this({
             created: userId,
@@ -55,6 +56,7 @@ async function createProduct(userId, name, description, price, currency, categor
             price,
             currency,
             categories,
+            ingredients
         });
     } catch(err){
         throw err;

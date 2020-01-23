@@ -10,7 +10,7 @@ class IngredientsController {
     async _getAllIngredients(req, res, next){
         try {
             const ingredients = await ingredientsModel.getAllIngredients();
-            if(!ingredients) return res.status(404).json({'status': 'failed', 'ingredients': 'no ingredients'})
+            if(!ingredients) return res.status(404).json({ status : 'failed', ingredients: 'no ingredients'})
 
             return res.status(200).json({'status': 'success', 'ingredients': ingredients});
         } catch (err){
@@ -71,4 +71,4 @@ class IngredientsController {
     };
 };
 
-export const IngredientsController = new IngredientsController();
+export const ingredientsController = new IngredientsController();

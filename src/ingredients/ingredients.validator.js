@@ -10,9 +10,8 @@ class IngredientsValidator {
     async _getAllIngredients(req, res, next){
         const url = req.url;
         if(url.includes('?')){
-            return res.status(400).json({SmartBin: 'Invalid URL'})
+            return res.status(400).json({SmartBin: 'Invalid URL'});
         };
-
         next();
     };
 
